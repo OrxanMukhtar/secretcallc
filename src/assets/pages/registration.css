@@ -1,0 +1,19 @@
+.regForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.regForm input {
+    border-radius: 5px;
+    border: none;
+    box-shadow: none !important;
+    outline: none;
+    padding: 5px;
+}
+.regBtn:hover {
+    background-color: #f4b315 ;
+}
+.regBtn:active {
+    border: #fff 1px solid;
+    color: #fff !important;
+}

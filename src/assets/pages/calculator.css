@@ -1,0 +1,89 @@
+
+
+body {
+    height: 100vh;
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+    background: linear-gradient(90deg, #6c0102, #440101);
+}
+
+nav {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    background-color: rgb(241, 128, 128);
+    text-align: center;
+}
+
+
+.calcBtns {
+    display: grid;
+    grid-template-columns: repeat(4, 2fr);
+    width: fit-content;
+}
+.calcBtns button {
+    border: 1px #fff solid;
+    margin: 2px;
+    color: #fff !important;
+
+}
+
+.displayParentDiv {
+    border: 1px solid #fff;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+
+.displayH1 {
+    height: 50px;
+    max-width: 200px;
+    text-align: center;
+    border: 1px solid #fff;
+    border-radius: 10px;
+    overflow: auto;
+    white-space: nowrap;
+    color: #fff !important;
+}
+
+.displayH1First {
+    margin-bottom: 3px;
+}
+
+.containerDiv {
+    margin: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* position: relative; */
+}
+
+.plus {
+    grid-row: span 2;
+}
+
+.equal {
+    grid-column: span 2;
+}
+
+.registrBtn {
+    position: absolute;
+    bottom: 20px;
+    width: 220px;
+    border: 1px solid #fff !important;
+    text-align: center;
+    color: #979797 !important;
+}
+.registrBtn {
+    transition: all 0.5s ease-in-out;
+}
+
+.registrBtn:hover {
+    background-color: #fff;
+    color: #440101 !important;
+    box-shadow: 0 0 10px rgba(68, 1, 1, 0.6);
+    transform: scale(1.05);
+    animation: regBtn 0.5s infinite alternate ease-in-out;
+}

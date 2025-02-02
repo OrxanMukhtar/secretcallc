@@ -1,0 +1,16 @@
+.img-width {
+    width: 400px;
+}
+
+.previewDiv {
+    display: flex;
+    flex-direction: column;
+}
+h1,  h5 {
+    color: #fff !important;
+}
+
+.galleryBtnColor {
+    background-color: #f4b315;
+    color: #6c0102;
+}
