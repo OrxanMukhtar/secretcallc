@@ -51,7 +51,8 @@ const deleteImageFromDB = async (id) => {
   store.delete(id);
 };
 
-// React Component
+
+
 const ImageUploader = () => {
   const [images, setImages] = useState([]);
   const [preview, setPreview] = useState(null);

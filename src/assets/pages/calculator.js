@@ -1,15 +1,68 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./calculator.css";
+// import Registration from "./registration.js";
 
 function Calculator() {
   const navigate = useNavigate();
   const [display, setDisplay] = useState("");
   const [result, setResult] = useState("");
-  
-  const pin = localStorage.getItem("pinCode")
+  const [pin, setPin] = useState("");
 
-  // const [setPinCode] = useContext(PinContext)
+  const openDB = () => {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open("RegistrationDB", 1);
+
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains("users")) {
+          db.createObjectStore("users", { keyPath: "id" });
+        }
+      };
+
+      request.onsuccess = (event) => {
+        resolve(event.target.result);
+      };
+
+      request.onerror = (event) => {
+        reject(event.target.error);
+      };
+    });
+  };
+
+  const getPinFromDB = async () => {
+    try {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction("users", "readonly");
+        const store = transaction.objectStore("users");
+        const request = store.get("registration");
+
+        request.onsuccess = () => {
+          if (request.result) {
+            resolve(request.result.pinCode);
+          } else {
+            resolve("");
+          }
+        };
+
+        request.onerror = () => {
+          reject(request.error);
+        };
+      });
+    } catch (error) {
+      console.error("error:", error);
+      return "";
+    }
+  };
+
+  useEffect(() => {
+    const fetchPin = async () => {
+      const storedPin = await getPinFromDB();
+      setPin(storedPin);
+    };
+    fetchPin();
+  }, []);
 
   const handleClick = (value) => {
     if (value === "AC") {
@@ -43,54 +96,70 @@ function Calculator() {
     }
   }, [display]);
 
+  const registrPg = () => {
+    navigate("Registration")
+  }
+
+
+  const [checkPin, setCheckPin] = useState("")
+
+
+useEffect(() => {
+    if(typeof(pin) === "string"){
+      setCheckPin("none")
+      // console.log(typeof(pin))
+    }else {
+      setCheckPin("block")
+      // console.log(typeof(pin))
+
+    }
+}, [])
+
+
+
   return (
     <div className="containerDiv">
       <div>
-      <div className="displayParentDiv">
-        <h1
-          style={{ fontSize: `${fontSize}px` }}
-          className="displayH1 displayH1First"
-        >
-          {result}
-        </h1>
-        <h1 style={{ fontSize: `${fontSize}px` }}
-          className="displayH1 m-0">
-          {display}
-        </h1>
+        <div className="displayParentDiv">
+          <h1 style={{ fontSize: `${fontSize}px` }} className="displayH1 displayH1First">
+            {result}
+          </h1>
+          <h1 style={{ fontSize: `${fontSize}px` }} className="displayH1 m-0">
+            {display}
+          </h1>
+        </div>
+        <div className="calcBtns">
+          {[
+            "AC",
+            "< <",
+            "/",
+            "*",
+            "7",
+            "8",
+            "9",
+            "-",
+            "4",
+            "5",
+            "6",
+            "+",
+            "1",
+            "2",
+            "3",
+            "0",
+            ".",
+            "=",
+          ].map((btn, index) => (
+            <button
+              key={index}
+              className={`btn ${btn === "=" ? "equal" : ""} ${btn === "+" ? "plus" : ""}`}
+              onClick={() => handleClick(btn)}
+            >
+              {btn}
+            </button>
+          ))}
+        </div>
       </div>
-
-      <div className="calcBtns">
-        {[
-          "AC",
-          "< <",
-          "/",
-          "*",
-          "7",
-          "8",
-          "9",
-          "-",
-          "4",
-          "5",
-          "6",
-          "+",
-          "1",
-          "2",
-          "3",
-          "0",
-          ".",
-          "=",
-        ].map((btn, index) => (
-          <button
-            key={index}
-            className={`btn ${btn === "=" ? "equal" : ""} ${btn === "+" ? "plus" : ""}`}
-            onClick={() => handleClick(btn)}
-          >
-            {btn}
-          </button>
-        ))}
-      </div>
-      </div>
-      <button className="btn registrBtn">Registration</button>
+      <button style={{display: checkPin}} onClick={registrPg} className="btn registrBtn">Registration</button>
     </div>
   );
 }
