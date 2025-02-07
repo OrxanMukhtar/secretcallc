@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./calculator.css";
-// import Registration from "./registration.js";
 
 function Calculator() {
   const navigate = useNavigate();
   const [display, setDisplay] = useState("");
   const [result, setResult] = useState("");
   const [pin, setPin] = useState("");
+  const [checkPin, setCheckPin] = useState("");
 
   const openDB = () => {
     return new Promise((resolve, reject) => {
@@ -30,7 +30,7 @@ function Calculator() {
     });
   };
 
-  const getPinFromDB = async () => {
+  const getPinFromDB = useCallback(async () => {
     try {
       const db = await openDB();
       return new Promise((resolve, reject) => {
@@ -54,7 +54,7 @@ function Calculator() {
       console.error("error:", error);
       return "";
     }
-  };
+  }, []);
 
   useEffect(() => {
     const fetchPin = async () => {
@@ -62,7 +62,15 @@ function Calculator() {
       setPin(storedPin);
     };
     fetchPin();
-  }, []);
+  }, [getPinFromDB]);
+
+  const safeEval = (expression) => {
+    try {
+      return new Function(`return ${expression}`)();
+    } catch (error) {
+      return "Error";
+    }
+  };
 
   const handleClick = (value) => {
     if (value === "AC") {
@@ -76,7 +84,7 @@ function Calculator() {
           setResult("ok");
           navigate("/gallery");
         } else {
-          setResult(eval(display));
+          setResult(safeEval(display));
         }
       } catch (error) {
         setResult("Error");
@@ -97,25 +105,16 @@ function Calculator() {
   }, [display]);
 
   const registrPg = () => {
-    navigate("Registration")
-  }
+    navigate("Registration");
+  };
 
-
-  const [checkPin, setCheckPin] = useState("")
-
-
-useEffect(() => {
-    if(typeof(pin) === "string"){
-      setCheckPin("none")
-      // console.log(typeof(pin))
-    }else {
-      setCheckPin("block")
-      // console.log(typeof(pin))
-
+  useEffect(() => {
+    if (typeof pin === "string") {
+      setCheckPin("none");
+    } else {
+      setCheckPin("block");
     }
-}, [])
-
-
+  }, [pin]);
 
   return (
     <div className="containerDiv">
@@ -159,7 +158,9 @@ useEffect(() => {
           ))}
         </div>
       </div>
-      <button style={{display: checkPin}} onClick={registrPg} className="btn registrBtn">Registration</button>
+      <button style={{ display: checkPin }} onClick={registrPg} className="btn registrBtn">
+        Registration
+      </button>
     </div>
   );
 }

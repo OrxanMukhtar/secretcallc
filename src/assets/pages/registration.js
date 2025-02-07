@@ -65,7 +65,8 @@ function Registration() {
   };
     const navigate = useNavigate();
   
-
+  
+    
   const homePg = () => {
     navigate("/")
   }
